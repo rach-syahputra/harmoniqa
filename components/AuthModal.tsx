@@ -12,24 +12,24 @@ const AuthModal = () => {
   const supabaseClient = useSupabaseClient()
   const router = useRouter()
   const { session } = useSessionContext()
-  const { isOpen, onClose } = useAuthModal()
+  const authModal = useAuthModal()
 
   useEffect(() => {
     if (session) {
       router.refresh()
-      onClose()
+      authModal.onClose()
     }
-  }, [session, router, onClose])
+  }, [session, router, authModal.onClose])
 
   const onChange = () => {
-    onClose()
+    authModal.onClose()
   }
 
   return (
     <Modal
       title='Welcome Back'
       description='Login to your account'
-      isOpen={isOpen}
+      isOpen={authModal.isOpen}
       onChange={onChange}
     >
       <Auth
