@@ -1,6 +1,7 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useMemo } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import { BiSearch } from 'react-icons/bi'
 import { HiHome } from 'react-icons/hi'
 import { FaUserAlt } from 'react-icons/fa'
@@ -11,6 +12,7 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import useAuthModal from '@/hooks/useAuthModal'
 import { useUser } from '@/hooks/useUser'
 import Button from './Button'
+import Link from 'next/link'
 
 interface HeaderProps {
   children: React.ReactNode
@@ -23,6 +25,26 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
 
   const supabaseClient = useSupabaseClient()
   const { user } = useUser()
+
+  const pathname = usePathname()
+
+  const routes = useMemo(
+    () => [
+      {
+        icon: HiHome,
+        label: 'Home',
+        active: pathname !== '/search',
+        href: '/'
+      },
+      {
+        icon: BiSearch,
+        label: 'Search',
+        active: pathname === '/search',
+        href: '/search'
+      }
+    ],
+    [pathname]
+  )
 
   const handleLogout = async () => {
     const { error } = await supabaseClient.auth.signOut()
@@ -54,12 +76,15 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
           </button>
         </div>
         <div className='flex items-center gap-x-2 md:hidden'>
-          <button className='flex items-center justify-center rounded-full bg-white p-2 transition hover:opacity-75'>
-            <HiHome size={20} className='text-black' />
-          </button>
-          <button className='flex items-center justify-center rounded-full bg-white p-2 transition hover:opacity-75'>
-            <BiSearch size={20} className='text-black' />
-          </button>
+          {routes.map((route) => (
+            <Link
+              key={route.label}
+              href={route.href}
+              className='flex items-center justify-center rounded-full bg-white p-2 transition hover:opacity-75'
+            >
+              <route.icon size={20} className='text-black' />
+            </Link>
+          ))}
         </div>
         <div className='flex items-center justify-between gap-x-4'>
           {user ? (
