@@ -33,7 +33,7 @@ const AuthModal = () => {
       onChange={onChange}
     >
       <Auth
-        redirectTo='https://harmoniqa.vercel.app/'
+        redirectTo={'https://harmoniqa.vercel.app/'}
         theme='dark'
         providers={['github']}
         magicLink
